@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:17
+    container_name: payload_db
+    environment:
+      POSTGRES_USER: payload
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: my-app
+    volumes:
+      - payload_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Mapea el puerto por defecto de PostgreSQL
+
+volumes:
+  payload_db_data:
