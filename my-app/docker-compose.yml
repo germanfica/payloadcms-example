@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  payload:
+    image: node:22.13.0-alpine
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/home/node/app
+      - node_modules:/home/node/app/node_modules
+    working_dir: /home/node/app/
+    command: sh -c "yarn install && yarn dev"
+    depends_on:
+      - mongo
+      - db
+    env_file:
+      - .env
+
+  db:
+    image: postgres:17
+    container_name: payload_db
+    environment:
+      POSTGRES_USER: payload
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: my-app
+    volumes:
+      - payload_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Mapea el puerto por defecto de PostgreSQL
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    command:
+      - --storageEngine=wiredTiger
+    volumes:
+      - data:/data/db
+    logging:
+      driver: none
+
+volumes:
+  data:
+  node_modules:
+  payload_db_data:
